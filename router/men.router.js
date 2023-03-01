@@ -122,7 +122,9 @@ productRouter.get("/mens", async (req, res) => {
         totalCount: productlength,
       });
     } else if (category) {
-      const product = await MenModel.find({ category: category }).limit(limit);
+      const product = await MenModel.find({ category: category })
+        .limit(limit)
+        .skip(limit * page);
       const productlength = await MenModel.find({
         category: category,
       }).count();
@@ -183,6 +185,45 @@ productRouter.get("/mens/:id", async (req, res) => {
   try {
     const product = await MenModel.find({ _id: id });
     res.status(201).json({ data: product, status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong", status: "error" });
+  }
+});
+
+productRouter.post("/add", async (req, res) => {
+  try {
+    const product = new MenModel(req.body);
+    product.save();
+    res
+      .status(201)
+      .json({ message: "Product added successfully", status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong", status: "error" });
+  }
+});
+
+productRouter.patch("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await MenModel.findByIdAndUpdate({ _id: id }, req.body);
+    res
+      .status(201)
+      .json({ message: "Data update successfully", status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong", status: "error" });
+  }
+});
+
+productRouter.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await MenModel.findByIdAndDelete({ _id: id });
+    res
+      .status(201)
+      .json({ message: "Data delete successfully", status: "success" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong", status: "error" });
