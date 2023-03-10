@@ -10,12 +10,14 @@ menRouter.get("/mens", async (req, res) => {
   const sort = req?.query?.sortby;
   let min_price = req?.query?.min_price;
   let max_price = req?.query?.max_price;
+  console.log(sort);
   let s;
   if (sort == "asc") {
     s = 1;
   } else if (sort == "desc") {
     s = -1;
   }
+  console.log(s);
   try {
     if (category && min_price && max_price) {
       min_price = Number(min_price);
@@ -110,6 +112,7 @@ menRouter.get("/mens", async (req, res) => {
         totalCount: productlength,
       });
     } else if (category && sort) {
+      console.log("running");
       const product = await MenModel.find({ category: category })
         .limit(limit)
         .sort({ price: s });
@@ -122,6 +125,7 @@ menRouter.get("/mens", async (req, res) => {
         totalCount: productlength,
       });
     } else if (category) {
+      console.log("running1");
       const product = await MenModel.find({ category: category })
         .limit(limit)
         .skip(limit * page);
@@ -134,6 +138,7 @@ menRouter.get("/mens", async (req, res) => {
         totalCount: productlength,
       });
     } else if (limit && page && sort) {
+      console.log("running2");
       const product = await MenModel.find()
         .limit(limit)
         .skip(limit * page)
@@ -145,6 +150,7 @@ menRouter.get("/mens", async (req, res) => {
         totalCount: productlength,
       });
     } else if (page && sort) {
+      console.log("running3");
       const product = await MenModel.find()
         .limit(limit)
         .skip(limit * page)
@@ -155,7 +161,17 @@ menRouter.get("/mens", async (req, res) => {
         status: "success",
         totalCount: productlength,
       });
+    } else if (sort) {
+      console.log("running10");
+      const product = await MenModel.find().limit(limit).sort({ price: s });
+      const productlength = await MenModel.find().count();
+      res.status(201).json({
+        data: product,
+        status: "success",
+        totalCount: productlength,
+      });
     } else if (page) {
+      console.log("running4");
       const product = await MenModel.find()
         .limit(limit)
         .skip(limit * page);
@@ -166,6 +182,7 @@ menRouter.get("/mens", async (req, res) => {
         totalCount: productlength,
       });
     } else {
+      console.log("running5");
       const product = await MenModel.find().limit(limit);
       const productlength = await MenModel.find().count();
       res.status(201).json({
