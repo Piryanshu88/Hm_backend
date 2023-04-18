@@ -24,7 +24,15 @@ app.use(
 
 app.use(express.json());
 app.get("/", (req, res) => {
-  res.send("This is the home page of HM clone ");
+  res.send({
+    title: "This is the home page of HM clone ",
+    author: "Piryanshu Bisht",
+    github: "https://github.com/Piryanshu88/",
+    email: "deepubisht2004@gmail.com",
+    message:
+      "If you find any difficulty, feel free to message or email me | Happy Coding 🧡🧡",
+    linkedin: "https://www.linkedin.com/in/piryanshu-bisht-ba1a22231/",
+  });
 });
 const options = {
   definition: {
