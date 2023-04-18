@@ -1,6 +1,123 @@
 const express = require("express");
 const { KidModel } = require("../models/product.model");
 const kidRouter = express.Router();
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    Kids:
+ *      type: object
+ *      properties:
+ *        _id:
+ *          type: string
+ *          description: The auto-generated id of the product
+ *        articleCode:
+ *          type: string
+ *          description: A unique code of the product
+ *        title:
+ *          type: string
+ *          description: title of the product
+ *        favouritesNotSavedText:
+ *          type: string
+ *        favouritesSavedText:
+ *          type: string
+ *        favouritesTracking:
+ *          type: string
+ *        image:
+ *          type: array
+ *          description: Images of the product
+ *        category:
+ *          type: string
+ *          description: category of the product
+ *        price:
+ *          type: integer
+ *          description: price of the product
+ *        sellingAttribute:
+ *          type: string
+ *        swatchesTotal:
+ *          type: string
+ *        swatches:
+ *          type: array
+ *        brandName:
+ *          type: string
+ *          description: brand of the product
+ *        percentageDiscount:
+ *          type: string
+ *        redPrice:
+ *          type: string
+ *        comingSoon:
+ *          type: string
+ *        outOfStockText:
+ *          type: string
+ */
+
+/**
+ * @swagger
+ * tags:
+ *  name: Kids
+ *  description: All the API routes  related to Kids Products
+ */
+
+/**
+ * @swagger
+ * /products/kids?q={query}:
+ *    get:
+ *      summary: get products
+ *      tags: [Kids]
+ *      parameters:
+ *        - in: path
+ *          name: q
+ *          description: search products by this query
+ *          schema:
+ *            type: string
+ *        - in: path
+ *          name: limit
+ *          required: false
+ *          description: To limit the number of product (by default its 15)
+ *          schema:
+ *            type: integer
+ *        - in: path
+ *          name: page
+ *          required: false
+ *          description: page number  (by default its 0)
+ *          schema:
+ *            type: integer
+ *        - in: path
+ *          name: sortby
+ *          required: false
+ *          description: sort products by it price ( you can use 'asc' or 'desc' )
+ *          schema:
+ *            type: string
+ *      responses:
+ *        200:
+ *          description: Getting data by search
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    $ref: '#/components/schemas/Kids'
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *                  totalCount:
+ *                    type: string
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
+
 kidRouter.get("/kids", async (req, res) => {
   const category = req?.query?.category;
   const page = Math.max(0, req?.query?.page || 0);
@@ -186,6 +303,46 @@ kidRouter.get("/kids", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /products/kids/{id}:
+ *    get:
+ *      summary: get product by its id
+ *      tags: [Kids]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          description: Numeric ID of the product to retrieve.
+ *          schema:
+ *            type: integer
+ *      responses:
+ *        200:
+ *          description: Getting data by ID
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    $ref: '#/components/schemas/Kids'
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
+
 kidRouter.get("/kids/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -196,6 +353,45 @@ kidRouter.get("/kids/:id", async (req, res) => {
     res.status(500).json({ message: "Something went wrong", status: "error" });
   }
 });
+
+/**
+ * @swagger
+ * /products/kids/add:
+ *    post:
+ *      summary: add products
+ *      tags: [Kids]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Kids'
+ *      responses:
+ *        200:
+ *          description: Data added Successfuly
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
 
 kidRouter.post("/kids/add", async (req, res) => {
   try {
@@ -210,6 +406,52 @@ kidRouter.post("/kids/add", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /products/kids/{id}:
+ *    patch:
+ *      summary: update product by id
+ *      tags: [Kids]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          description: Numeric ID of the product to retrieve.
+ *          schema:
+ *            type: integer
+ *      requestBody:
+ *        required: false
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Kids'
+ *      responses:
+ *        200:
+ *          description: Data Updated Successfuly
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
+
 kidRouter.patch("/kids/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -222,6 +464,46 @@ kidRouter.patch("/kids/:id", async (req, res) => {
     res.status(500).json({ message: "Something went wrong", status: "error" });
   }
 });
+
+/**
+ * @swagger
+ * /products/kids/{id}:
+ *    delete:
+ *      summary: delete product by id
+ *      tags: [Kids]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          description: Numeric ID of the product to retrieve.
+ *          schema:
+ *            type: integer
+ *      responses:
+ *        200:
+ *          description: Data deleted Successfuly
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
 
 kidRouter.delete("/kids/:id", async (req, res) => {
   const { id } = req.params;

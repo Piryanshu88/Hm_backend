@@ -1,6 +1,123 @@
 const express = require("express");
 const { HomeModel } = require("../models/product.model");
 const homeRouter = express.Router();
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    Home:
+ *      type: object
+ *      properties:
+ *        _id:
+ *          type: string
+ *          description: The auto-generated id of the product
+ *        articleCode:
+ *          type: string
+ *          description: A unique code of the product
+ *        title:
+ *          type: string
+ *          description: title of the product
+ *        favouritesNotSavedText:
+ *          type: string
+ *        favouritesSavedText:
+ *          type: string
+ *        favouritesTracking:
+ *          type: string
+ *        image:
+ *          type: array
+ *          description: Images of the product
+ *        category:
+ *          type: string
+ *          description: category of the product
+ *        price:
+ *          type: integer
+ *          description: price of the product
+ *        sellingAttribute:
+ *          type: string
+ *        swatchesTotal:
+ *          type: string
+ *        swatches:
+ *          type: array
+ *        brandName:
+ *          type: string
+ *          description: brand of the product
+ *        percentageDiscount:
+ *          type: string
+ *        redPrice:
+ *          type: string
+ *        comingSoon:
+ *          type: string
+ *        outOfStockText:
+ *          type: string
+ */
+
+/**
+ * @swagger
+ * tags:
+ *  name: Home
+ *  description: All the API routes  related to Home Care Products
+ */
+
+/**
+ * @swagger
+ * /products/home?q={query}:
+ *    get:
+ *      summary: get products
+ *      tags: [Home]
+ *      parameters:
+ *        - in: path
+ *          name: q
+ *          description: search products by this query
+ *          schema:
+ *            type: string
+ *        - in: path
+ *          name: limit
+ *          required: false
+ *          description: To limit the number of product (by default its 15)
+ *          schema:
+ *            type: integer
+ *        - in: path
+ *          name: page
+ *          required: false
+ *          description: page number  (by default its 0)
+ *          schema:
+ *            type: integer
+ *        - in: path
+ *          name: sortby
+ *          required: false
+ *          description: sort products by it price ( you can use 'asc' or 'desc' )
+ *          schema:
+ *            type: string
+ *      responses:
+ *        200:
+ *          description: Getting data by search
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    $ref: '#/components/schemas/Home'
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *                  totalCount:
+ *                    type: string
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
+
 homeRouter.get("/home", async (req, res) => {
   const category = req?.query?.category;
   const page = Math.max(0, req?.query?.page || 0);
@@ -186,6 +303,46 @@ homeRouter.get("/home", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /products/home/{id}:
+ *    get:
+ *      summary: get product by its id
+ *      tags: [Home]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          description: Numeric ID of the product to retrieve.
+ *          schema:
+ *            type: integer
+ *      responses:
+ *        200:
+ *          description: Getting data by ID
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    $ref: '#/components/schemas/home'
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
+
 homeRouter.get("/home/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -196,6 +353,45 @@ homeRouter.get("/home/:id", async (req, res) => {
     res.status(500).json({ message: "Something went wrong", status: "error" });
   }
 });
+
+/**
+ * @swagger
+ * /products/home/add:
+ *    post:
+ *      summary: add products
+ *      tags: [Home]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Home'
+ *      responses:
+ *        200:
+ *          description: Data added Successfuly
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
 
 homeRouter.post("/home/add", async (req, res) => {
   try {
@@ -210,6 +406,52 @@ homeRouter.post("/home/add", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /products/home/{id}:
+ *    patch:
+ *      summary: update product by id
+ *      tags: [Home]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          description: Numeric ID of the product to retrieve.
+ *          schema:
+ *            type: integer
+ *      requestBody:
+ *        required: false
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Home'
+ *      responses:
+ *        200:
+ *          description: Data Updated Successfuly
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
+
 homeRouter.patch("/home/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -222,6 +464,46 @@ homeRouter.patch("/home/:id", async (req, res) => {
     res.status(500).json({ message: "Something went wrong", status: "error" });
   }
 });
+
+/**
+ * @swagger
+ * /products/home/{id}:
+ *    delete:
+ *      summary: delete product by id
+ *      tags: [Home]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          description: Numeric ID of the product to retrieve.
+ *          schema:
+ *            type: integer
+ *      responses:
+ *        200:
+ *          description: Data deleted Successfuly
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
 
 homeRouter.delete("/home/:id", async (req, res) => {
   const { id } = req.params;

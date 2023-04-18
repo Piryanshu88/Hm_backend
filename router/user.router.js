@@ -4,9 +4,83 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { UserModel } = require("../models/user.model");
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    User:
+ *      type: object
+ *      properties:
+ *        _id:
+ *          type: string
+ *          description: The auto-generated id of the user
+ *        firstName:
+ *          type: string
+ *          description: The first name of user
+ *        lastName:
+ *          type: string
+ *          description: The last name of user
+ *        email:
+ *          type: string
+ *          description: The user email
+ *        gender:
+ *           type: string
+ *           description: gender of the user
+ *        password:
+ *           type: string
+ */
+
+/**
+ * @swagger
+ * tags:
+ *  name: User
+ *  description: All the API routes related to User
+ */
+
 userRouter.get("/", (req, res) => {
   res.send("user login");
 });
+
+/**
+ * @swagger
+ * /user/register:
+ *    post:
+ *      summary: To register the details of a new user
+ *      tags: [User]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *      responses:
+ *        200:
+ *          description: The user was successfully registered
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    description: User register successfully
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    description: User register successfully
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
 
 userRouter.post("/register", async (req, res) => {
   const { firstName, lastName, email, password, gender } = req.body;
@@ -44,6 +118,55 @@ userRouter.post("/register", async (req, res) => {
     return res.status(500).json({ message: error.message, status: "error" });
   }
 });
+
+/**
+ * @swagger
+ * /user/login:
+ *    post:
+ *      summary: To login the existing user
+ *      tags: [User]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *                type: object
+ *                properties:
+ *                  email:
+ *                    type: string
+ *                  password:
+ *                    type: string
+ *      responses:
+ *        200:
+ *          description: The user was successfully login
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    description: User Login successfully
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *                  token:
+ *                    type: string
+ *                  data:
+ *                    type: object
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
 
 userRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;

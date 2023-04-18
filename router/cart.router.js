@@ -69,6 +69,50 @@ const cartRouter = express.Router();
  *  description: All the API routes related to Cart
  */
 
+/**
+ * @swagger
+ * /cart:
+ *    get:
+ *      summary: get cart data
+ *      tags: [Cart]
+ *      requestBody:
+ *        required: true
+ *        description: token is needed (pass it in headers as Authorization)
+ *        content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  Authorization:
+ *                    description: token
+ *      responses:
+ *        200:
+ *          description: getting cart data successfully
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Cart'
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
+
 cartRouter.get("/", async (req, res) => {
   try {
     const cart = await CartModel.find({ authorID: req.body.authorID });
@@ -84,6 +128,45 @@ cartRouter.get("/", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /cart/add:
+ *    post:
+ *      summary: add product to cart
+ *      tags: [Cart]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Cart'
+ *      responses:
+ *        200:
+ *          description: Added to Cart Successfully
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
+
 cartRouter.post("/add", async (req, res) => {
   try {
     const cart = new CartModel(req.body);
@@ -96,6 +179,52 @@ cartRouter.post("/add", async (req, res) => {
     res.status(500).json({ message: "Something went wrong", status: "error" });
   }
 });
+
+/**
+ * @swagger
+ * /cart/update/{id}:
+ *    patch:
+ *      summary: update cart product by id
+ *      tags: [Cart]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          description: Numeric ID of the product to retrieve.
+ *          schema:
+ *            type: integer
+ *      requestBody:
+ *        required: false
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Cart'
+ *      responses:
+ *        200:
+ *          description: Cart Updated Successfully
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
 
 cartRouter.patch("/update/:id", async (req, res) => {
   const { id } = req.params;
@@ -110,6 +239,46 @@ cartRouter.patch("/update/:id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /cart/delete/{id}:
+ *    delete:
+ *      summary: delete cart products by id
+ *      tags: [Cart]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          description: Numeric ID of the product to retrieve.
+ *          schema:
+ *            type: integer
+ *      responses:
+ *        200:
+ *          description: Cart deleted Successfully
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
+
 cartRouter.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -123,6 +292,51 @@ cartRouter.delete("/delete/:id", async (req, res) => {
   }
 });
 // for checkout
+
+/**
+ * @swagger
+ * /cart/checkout:
+ *    delete:
+ *      summary: delete all cart of the login user
+ *      tags: [Cart]
+ *      requestBody:
+ *        required: true
+ *        description: token is needed (pass it in headers as Authorization)
+ *        content:
+ *          application/json:
+ *            schema:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  Authorization:
+ *                    description: token
+ *      responses:
+ *        200:
+ *          description: Checkout Successfully
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Success
+ *        500:
+ *          description: Something went wrong
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  status:
+ *                    type: string
+ *                    description: Failed
+ */
+
 cartRouter.delete("/checkout", async (req, res) => {
   try {
     const cart = await CartModel.deleteMany({ authorID: req.body.authorID });
